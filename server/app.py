@@ -20,19 +20,87 @@ def get_stories():
 def post_stories():
     data = request.get_json()
 
-    new_story = Story(
-        title = data.get('title'),
-        content = data.get('content'),
-        user_id = data.get('user_id')
+    try:
+        new_story = Story(
+            title = data.get('title'),
+            content = data.get('content'),
+            user_id = data.get('user_id')
+        )
+
+        db.session.add(new_story)
+        db.session.commit()
+
+        return make_response(
+            jsonify(new_story.to_dict()),
+            201
+        )
+    except ValueError:
+        return make_response(
+            jsonify({"errors": ["validation errors"]}), 
+            400
+        )
+
+@app.get('/stories/<int:id>')
+def get_story_by_id(id):
+    story = Story.query.filter(Story.id==id).first()
+
+    if not story:
+        return make_response(
+            jsonify({"error": "story not found"}),
+            404
+        )
+
+    return make_response(
+        jsonify(story.to_dict()),
+        200
     )
 
-    db.session.add(new_story)
+@app.delete('/stories/<int:id>')
+def delete_story_by_id(id):
+    story = Story.query.filter(Story.id==id).first()
+
+    if not story:
+        return make_response(
+            jsonify({"error": "story not found"}),
+            404
+        )
+
+    db.session.delete(story)
     db.session.commit()
 
     return make_response(
-        jsonify(new_story.to_dict()),
-        201
+        jsonify({}),
+        202
     )
+
+@app.patch('/stories/<int:id>')
+def patch_story_by_id(id):
+    story = Story.query.filter(Story.id==id).first()
+
+    if not story:
+        return make_response(
+            jsonify({"error": "story not found"}),
+            404
+        )
+
+    data = request.get_json()
+
+    try:
+        for attr in data:
+            setattr(story, attr, data[attr])
+
+        db.session.add(story)
+        db.session.commit()
+
+        return make_response(
+            jsonify(story.to_dict()),
+            200
+        )
+    except ValueError:
+        return make_response(
+            jsonify({"errors": ["validation errors"]}), 
+            400
+        )
 
 @app.post('/signup')
 def signup():
@@ -42,11 +110,10 @@ def signup():
     try:
         # create new user using json data
         new_user = User(
-            username=data['username'],
-            bio=data.get('bio'),
-            image_url=data.get('image_url')
+            username=data['username']
         )
-        new_user.password_hash = data['password']
+        new_user.password_hash=data['password']
+
         # add user to db
         db.session.add(new_user)
         db.session.commit()
@@ -59,20 +126,6 @@ def signup():
 
     # return user as JSON, status code 201
     return new_user.to_dict(), 201
-
-@app.get('/check_session')
-def check_session():
-    # get user_id from browser cookies
-    user_id = session.get('user_id')
-    # check for user in db
-    user = User.query.filter(User.id == user_id).first()
-
-    if not user:
-        # user doesn't exist, return 401 (unauthorized)
-        return {'error': 'Unauthorized'}, 401
-    
-    # user exists, return user as JSON, status code 200
-    return user.to_dict(), 200
 
 @app.post('/login')
 def login():
@@ -87,7 +140,7 @@ def login():
         # user doesn't exist or password doesn't match, return 401
         return {'error': 'Login failed'}, 401
     
-    # login success, add cookie to broswer
+    # login success, add cookie to browser
     session['user_id'] = user.id
     return user.to_dict(), 201
 
@@ -105,6 +158,19 @@ def logout():
     # return 204 (no content)
     return {}, 204
 
+@app.get('/check_session')
+def check_session():
+    # get user_id from browser cookies
+    user_id = session.get('user_id')
+    # check for user in db
+    user = User.query.filter(User.id == user_id).first()
+
+    if not user:
+        # user doesn't exist, return 401 (unauthorized)
+        return {'error': 'Unauthorized'}, 401
+    
+    # user exists, return user as JSON, status code 200
+    return user.to_dict(), 200
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

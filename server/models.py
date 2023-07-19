@@ -1,5 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates
 
 from config import db, bcrypt
 
@@ -11,12 +12,14 @@ class Story(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     content = db.Column(db.String)
-    # user = db.Column(db.String)
-    # preview = db.Column(db.String)
-    # is_member_only = db.Column(db.Boolean, default=False)
-    # date = db.Column(db.DateTime, server_default=db.func.now())
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @validates('title')
+    def validate_title(self, key, title):
+        if not title or len(title) < 10:
+            raise ValueError("Title must be at least 10 characters")
+        return title
 
     def __repr__(self):
         return f'<Story {self.id} by {self.author} >'
@@ -45,5 +48,5 @@ class User(db.Model, SerializerMixin):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
 
     def __repr__(self):
-        return f'<User {self.username} >'
+        return f"<User {self.username}>"
     
