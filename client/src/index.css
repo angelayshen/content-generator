@@ -9,6 +9,12 @@
   margin-right: 10px;
 }
 
+.button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+
 body {
   margin-top: 10px;
   margin-right: 20px;

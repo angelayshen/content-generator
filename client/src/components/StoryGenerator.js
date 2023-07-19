@@ -1,8 +1,7 @@
 import OPENAI_API_KEY from './keys.js';
-import Story from './Story.js';
 import React, { useState } from 'react';
 
-function StoryGenerator() {
+function StoryGenerator({ user }) {
   const [prompt, setPrompt] = useState('');
 
   function handleInputChange(event) {
@@ -47,7 +46,6 @@ function StoryGenerator() {
           body: JSON.stringify({
             title: prompt,
             content: content,
-            user_id: 3
           }),
         });
     
@@ -71,9 +69,5 @@ function StoryGenerator() {
     </div>
   );
 };
-
-
-
-
 
 export default StoryGenerator;
