@@ -1,8 +1,4 @@
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import StoryGenerator from './StoryGenerator';
-import StoryList from './StoryList';
-
-function NavBar({ user, setUser }) {
+function NavBar({ setUser }) {
   
     function handleLogout() {
         fetch("/logout", { method: "DELETE" }).then((r) => {

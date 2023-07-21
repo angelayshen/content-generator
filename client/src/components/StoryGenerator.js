@@ -2,18 +2,26 @@ import OPENAI_API_KEY from './keys.js';
 import React, { useState } from 'react';
 
 function StoryGenerator({ user }) {
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState("");
   const [story, setStory] = useState("");
+  const [error, setError] = useState("");
 
 
   function handleInputChange(event) {
     setPrompt(event.target.value);
+    setError("");
   };
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    // call your API endpoint to generate the story
+    // implement validation on the client side
+    if (prompt.length < 10) {
+      setError("Prompt must be at least 10 characters long");
+      return;
+    }
+
+    // call OpenAI API to generate the story
     async function generateStory(prompt) {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
@@ -67,6 +75,7 @@ function StoryGenerator({ user }) {
           <textarea type="text" value={prompt} onChange={handleInputChange} style={{width: "500px", height: "25px"}}/>
         <button type="submit">Generate</button>
       </form>
+        {error && <p style={{color: "red"}}>{error}</p>}
         <pre>{story}</pre>
     </div>
   );

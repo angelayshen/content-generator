@@ -1,8 +1,7 @@
-import ReactMarkdown from "react-markdown";
 import React, { useState } from 'react';
 
-function StoryItem({ story, user, onDelete, onUpdate }) {
-  const { id, title, user_id, content} = story;
+function StoryItem({ story, onDelete, onUpdate }) {
+  const { id, title, content} = story;
 
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
