@@ -5,7 +5,7 @@ function StoryList({ user }) {
   const [stories, setStories] = useState([]);
 
   useEffect(() => {
-    fetch("/stories")
+    fetch(`/users/${user.id}/stories`)
       .then((r) => r.json())
       .then(setStories);
   }, []);
@@ -21,7 +21,7 @@ function StoryList({ user }) {
   return (
     <main>
       {stories.map((story) => (
-        <StoryItem key={story.id} story={story} onDelete={handleDelete} onUpdate={handleUpdate} />
+        <StoryItem key={story.id} story={story} user={user} onDelete={handleDelete} onUpdate={handleUpdate} />
       ))}
     </main>
   );

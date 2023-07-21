@@ -27,8 +27,7 @@ function LoginForm({ onLogin }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <form>
-        Username
+        Username  
         <input
           type="text"
           id="username"
@@ -36,9 +35,7 @@ function LoginForm({ onLogin }) {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-      </form>
-      <form>
-        Password
+        Password  
         <input
           type="password"
           id="password"
@@ -46,17 +43,12 @@ function LoginForm({ onLogin }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-      </form>
-      <form>
-        <button variant="fill" color="primary" type="submit">
+        <button type="submit">
           {isLoading ? "Loading..." : "Login"}
         </button>
-      </form>
-      <form>
-        {errors.map((err) => (
-          <error key={err}>{err}</error>
-        ))}
-      </form>
+      {errors.map((err, index) => (
+        <p key={index} style={{color: "red"}}>{err}</p>
+      ))}
     </form>
   );
 }

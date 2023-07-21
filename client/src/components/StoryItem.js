@@ -59,13 +59,8 @@ function StoryItem({ story, user, onDelete, onUpdate }) {
 
   return (
     <article>
-      <h1>{title}</h1>
-      <small>
-        {/* <p>
-          <em>Written by {user.username}</em>
-        </p> */}
-      </small>
-      <ReactMarkdown>{content}</ReactMarkdown>
+      <h3>{title}</h3>
+      <pre>{content}</pre>
       <button onClick={handleDelete}>Delete</button>
       <button onClick={() => setIsEditing(true)}>Edit</button>
     </article>

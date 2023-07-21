@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 
 function StoryGenerator({ user }) {
   const [prompt, setPrompt] = useState('');
+  const [story, setStory] = useState("");
+
 
   function handleInputChange(event) {
     setPrompt(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     // call your API endpoint to generate the story
@@ -21,8 +23,8 @@ function StoryGenerator({ user }) {
           },
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
-            messages: [{role: "user", content: `Write a story about the following: ${prompt}`}],
-            max_tokens: 20
+            messages: [{role: "user", content: `Write a funny short limerick about the following: ${prompt}`}],
+            max_tokens: 200
           })
         })
       
@@ -36,6 +38,7 @@ function StoryGenerator({ user }) {
         const data = await response.json();
         const content = data.choices[0].message.content;
         console.log(content)
+        setStory(content);
 
         // Save poem to database
         const saveResponse = await fetch('/stories', {
@@ -46,6 +49,7 @@ function StoryGenerator({ user }) {
           body: JSON.stringify({
             title: prompt,
             content: content,
+            user_id: user.id
           }),
         });
     
@@ -58,14 +62,12 @@ function StoryGenerator({ user }) {
 
   return (
     <div>
-      <h1>Story Generator</h1>
       <form onSubmit={handleSubmit}>
-        <label>
-          Prompt:
-          <input type="text" value={prompt} onChange={handleInputChange} />
-        </label>
+          Enter a prompt below to generate your limerick:
+          <textarea type="text" value={prompt} onChange={handleInputChange} style={{width: "500px", height: "25px"}}/>
         <button type="submit">Generate</button>
       </form>
+        <pre>{story}</pre>
     </div>
   );
 };

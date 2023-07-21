@@ -16,8 +16,17 @@ def get_stories():
         200
     )
 
+@app.get('/users/<int:user_id>/stories')
+def get_user_stories(user_id):
+    stories = Story.query.filter(Story.user_id == user_id).all()
+    data = [story.to_dict() for story in stories]
+    return make_response(
+        jsonify(data), 
+        200
+    )
+
 @app.post('/stories')
-def post_stories():
+def post_story():
     data = request.get_json()
 
     try:
@@ -138,7 +147,7 @@ def login():
     
     if not user or not user.authenticate(data['password']):
         # user doesn't exist or password doesn't match, return 401
-        return {'error': 'Login failed'}, 401
+        return {'errors': ['Login failed: incorrect username or password']}, 401
     
     # login success, add cookie to browser
     session['user_id'] = user.id

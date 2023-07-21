@@ -4,32 +4,36 @@ import NavBar from './Navbar';
 import Login from './Login';
 import StoryGenerator from './StoryGenerator';
 import StoryList from './StoryList';
+import { Helmet } from 'react-helmet';
 
 function App() {
   const [user, setUser] = useState(null);
 
-  // useEffect(() => {
-  //   // auto-login feature
-  //   fetch("/check_session").then((r) => {
-  //     if (r.ok) {
-  //       r.json().then((user) => setUser(user));
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    // auto-login feature
+    fetch("/check_session").then((r) => {
+      if (r.ok) {
+        r.json().then((user) => setUser(user));
+      }
+    });
+  }, []);
 
-  // if (!user) return <Login onLogin={setUser} />;
+  if (!user) return <Login onLogin={setUser} />;
 
   return (
     <div>
+    <Helmet>
+      <title>Limerick Generator</title>
+    </Helmet>
     <NavBar user={user} setUser={setUser} />
     <Router>
       <div className='header'>
-        <Link to='/'>Stories</Link>
+        <Link to='/'>Limericks</Link>
         <Link to='/generate'>Generate</Link>
       </div>
         <Switch>
           <Route path="/generate">
-              <StoryGenerator />
+              <StoryGenerator user={user}/>
           </Route>
           <Route path="/">
               <StoryList user={user} />

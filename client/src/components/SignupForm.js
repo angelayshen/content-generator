@@ -18,7 +18,7 @@ function SignUpForm({ onLogin }) {
       },
       body: JSON.stringify({
         username: username,
-        password_hash: password,
+        password: password,
         password_confirmation: passwordConfirmation
       }),
     }).then((r) => {
@@ -33,7 +33,6 @@ function SignUpForm({ onLogin }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <form>
         Username
         <input
           type="text"
@@ -42,8 +41,6 @@ function SignUpForm({ onLogin }) {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-      </form>
-      <form>
         Password
         <input
           type="password"
@@ -52,25 +49,10 @@ function SignUpForm({ onLogin }) {
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
         />
-      </form>
-      <form>
-        Password Confirmation
-        <input
-          type="password"
-          id="password_confirmation"
-          value={passwordConfirmation}
-          onChange={(e) => setPasswordConfirmation(e.target.value)}
-          autoComplete="current-password"
-        />
-      </form>
-      <form>
         <button type="submit">{isLoading ? "Loading..." : "Sign Up"}</button>
-      </form>
-      <form>
         {errors.map((err) => (
-          <error key={err}>{err}</error>
+          <p key={err}>{err}</p>
         ))}
-      </form>
     </form>
   );
 }
