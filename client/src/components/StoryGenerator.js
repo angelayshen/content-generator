@@ -5,7 +5,7 @@ function StoryGenerator({ user }) {
   const [prompt, setPrompt] = useState("");
   const [story, setStory] = useState("");
   const [error, setError] = useState("");
-
+  const [generating, setGenerating] = useState(false);
 
   function handleInputChange(event) {
     setPrompt(event.target.value);
@@ -15,58 +15,66 @@ function StoryGenerator({ user }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    // implement validation on the client side
+    // Implement prompt validation on the client side
     if (prompt.length < 10) {
       setError("Prompt must be at least 10 characters long");
       return;
     }
 
-    // call OpenAI API to generate the story
-    async function generateStory(prompt) {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: 'gpt-3.5-turbo',
-            messages: [{role: "user", content: `Write a funny short limerick about the following: ${prompt}`}],
-            max_tokens: 200
+    setGenerating(true);
+
+    try {
+      // Call OpenAI API to generate the content
+      async function generateStory(prompt) {
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+              model: 'gpt-3.5-turbo',
+              messages: [{role: "user", content: `Write a limerick about the following: ${prompt}`}],
+              max_tokens: 400
+            })
           })
-        })
+        
+          // Throw error message if POST request fails
+          if (!response.ok) {
+            const message = `An error has occured: ${response.status}`;
+            throw new Error(message);
+          }
+
+          const data = await response.json();
+          const content = data.choices[0].message.content;
+
+          setStory(content);
+
+          // Save poem to database
+          const saveResponse = await fetch('/stories', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: prompt,
+              content: content,
+              user_id: user.id
+            }),
+          });
       
-        // Throw error message if POST request fails
-        if (!response.ok) {
-          const message = `An error has occured: ${response.status}`;
-          throw new Error(message);
-        }
-
-        // Print poem
-        const data = await response.json();
-        const content = data.choices[0].message.content;
-        console.log(content)
-        setStory(content);
-
-        // Save poem to database
-        const saveResponse = await fetch('/stories', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: prompt,
-            content: content,
-            user_id: user.id
-          }),
-        });
-    
-        if (!saveResponse.ok) {
-          throw new Error(`Failed to save story: ${saveResponse.status}`);
-        }
+          if (!saveResponse.ok) {
+            throw new Error(`Failed to save story: ${saveResponse.status}`);
+          } 
       }
-      generateStory(prompt)
+      await generateStory(prompt) 
+
+    } catch(e) {
+      setError(e.message);
+    } finally {
+      setGenerating(false);
     }
+  }
 
   return (
     <div>
@@ -76,7 +84,7 @@ function StoryGenerator({ user }) {
         <button type="submit">Generate</button>
       </form>
         {error && <p style={{color: "red"}}>{error}</p>}
-        <pre>{story}</pre>
+        {generating ? <em>Generating content...</em> : <pre className="generated-content">{story}</pre>}
     </div>
   );
 };

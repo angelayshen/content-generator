@@ -6,6 +6,7 @@ function StoryItem({ story, onDelete, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
   const [newContent, setNewContent] = useState(content);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Handle delete request
   const handleDelete = () => {
@@ -59,7 +60,7 @@ function StoryItem({ story, onDelete, onUpdate }) {
   return (
     <article>
       <h3>{title}</h3>
-      <pre>{content}</pre>
+      <pre className="generated-content">{content}</pre>
       <button onClick={handleDelete}>Delete</button>
       <button onClick={() => setIsEditing(true)}>Edit</button>
     </article>

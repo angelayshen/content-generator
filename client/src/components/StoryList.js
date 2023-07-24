@@ -10,20 +10,22 @@ function StoryList({ user }) {
       .then(setStories);
   }, []);
 
-  const handleDelete = (id) => {
+  function handleDelete(id) {
     setStories((currentStories) => currentStories.filter((story) => story.id !== id));
   };
 
-  const handleUpdate = (updatedStory) => {
+  function handleUpdate(updatedStory) {
     setStories((currentStories) => currentStories.map((story) => story.id === updatedStory.id ? updatedStory : story));
   };
 
   return (
-    <main>
-      {stories.map((story) => (
-        <StoryItem key={story.id} story={story} user={user} onDelete={handleDelete} onUpdate={handleUpdate} />
+    <div className="grid-container">
+      {stories.map(story => (
+        <div className="story-card" key={story.id}>
+          <StoryItem story={story} onDelete={handleDelete} onUpdate={handleUpdate} />
+        </div>
       ))}
-    </main>
+    </div>
   );
 }
 
