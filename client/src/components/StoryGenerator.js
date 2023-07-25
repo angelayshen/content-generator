@@ -6,11 +6,20 @@ function StoryGenerator({ user }) {
   const [story, setStory] = useState("");
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [storyType, setStoryType] = useState("limerick");
+
+  // Take in user prompt
 
   function handleInputChange(event) {
     setPrompt(event.target.value);
     setError("");
   };
+
+  // Take in user story type
+
+  function handleStoryTypeChange(event) {
+    setStoryType(event.target.value);
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -34,7 +43,7 @@ function StoryGenerator({ user }) {
             },
             body: JSON.stringify({
               model: 'gpt-3.5-turbo',
-              messages: [{role: "user", content: `Write a limerick about the following: ${prompt}`}],
+              messages: [{role: "user", content: `Write a ${storyType} about the following: ${prompt}. Be concise.`}],
               max_tokens: 400
             })
           })
@@ -79,10 +88,21 @@ function StoryGenerator({ user }) {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-          Enter a prompt below to generate your limerick:
+          <label>Enter a prompt below to generate your &nbsp;
+            {/* Add a dropdown menu to select story type */}
+            <select value={storyType} onChange={handleStoryTypeChange}>
+              <option value="limerick">limerick</option>
+              <option value="nursery rhyme">nursery rhyme</option>
+              <option value="ode">ode</option>
+              <option value="sonnet">sonnet</option>
+              <option value="short story">short story</option>
+            </select>
+          :</label>
+          {/* Add text box to capture user prompt */}
           <textarea type="text" value={prompt} onChange={handleInputChange} style={{width: "500px", height: "25px"}}/>
         <button type="submit">Generate</button>
       </form>
+      {/* Add loading message so user knows content is being generated */}
         {error && <p style={{color: "red"}}>{error}</p>}
         {generating ? <em>Generating content...</em> : <pre className="generated-content">{story}</pre>}
     </div>

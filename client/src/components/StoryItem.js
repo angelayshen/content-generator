@@ -6,7 +6,6 @@ function StoryItem({ story, onDelete, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
   const [newContent, setNewContent] = useState(content);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   // Handle delete request
   const handleDelete = () => {

@@ -9,7 +9,7 @@ function NavBar({ setUser }) {
       }
 
     return ( 
-    <button className="button" onClick={handleLogout}>
+    <button className="logout" onClick={handleLogout}>
         Logout
     </button>
     );

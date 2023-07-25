@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, NavLink } from 'react-router-dom';
 import NavBar from './Navbar';
 import Login from './Login';
 import StoryGenerator from './StoryGenerator';
@@ -21,26 +21,31 @@ function App() {
   if (!user) return <Login onLogin={setUser} />;
 
   return (
-    <div>
-    <Helmet>
-      <title>Limerick Generator</title>
-    </Helmet>
-    <NavBar user={user} setUser={setUser} />
     <Router>
-      <div className='header'>
-        <Link to='/'>Limericks</Link>
-        <Link to='/generate'>Generate</Link>
-      </div>
+      <div>
+        <Helmet>
+          <title>Limerick Generator</title>
+        </Helmet>
+        <NavBar user={user} setUser={setUser} />
+        <div className='header link-container'>
+          <NavLink to='/' exact activeClassName='active-link'>Home</NavLink>
+          <NavLink to='/generate' activeClassName='active-link'>Generate</NavLink>
+          <NavLink to='/generate' activeClassName='active-link'>Limerick</NavLink>
+          <NavLink to='/generate' activeClassName='active-link'>Nursery Rhyme</NavLink>
+          <NavLink to='/generate' activeClassName='active-link'>Ode</NavLink>
+          <NavLink to='/generate' activeClassName='active-link'>Sonnet</NavLink>
+          <NavLink to='/generate' activeClassName='active-link'>Short Story</NavLink>
+        </div>
         <Switch>
           <Route path="/generate">
-              <StoryGenerator user={user}/>
+            <StoryGenerator user={user}/>
           </Route>
           <Route path="/">
-              <StoryList user={user} />
+            <StoryList user={user} />
           </Route>
         </Switch>
+      </div>
     </Router>
-    </div>
   );
 };
 
