@@ -9,14 +9,12 @@ function StoryGenerator({ user }) {
   const [storyType, setStoryType] = useState("limerick");
 
   // Take in user prompt
-
   function handleInputChange(event) {
     setPrompt(event.target.value);
     setError("");
   };
 
-  // Take in user story type
-
+  // Take in user story type from drop down menu
   function handleStoryTypeChange(event) {
     setStoryType(event.target.value);
   }
@@ -43,7 +41,7 @@ function StoryGenerator({ user }) {
             },
             body: JSON.stringify({
               model: 'gpt-3.5-turbo',
-              messages: [{role: "user", content: `Write a ${storyType} about the following: ${prompt}. Be concise.`}],
+              messages: [{role: "user", content: `Write a ${storyType} about ${prompt}.`}],
               max_tokens: 400
             })
           })
@@ -68,6 +66,7 @@ function StoryGenerator({ user }) {
             body: JSON.stringify({
               title: prompt,
               content: content,
+              content_type: storyType,
               user_id: user.id
             }),
           });
@@ -88,23 +87,23 @@ function StoryGenerator({ user }) {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-          <label>Enter a prompt below to generate your &nbsp;
+          <label>Write a &nbsp;
             {/* Add a dropdown menu to select story type */}
             <select value={storyType} onChange={handleStoryTypeChange}>
               <option value="limerick">limerick</option>
-              <option value="nursery rhyme">nursery rhyme</option>
+              <option value="nursery rhyme (not a song)">nursery rhyme</option>
               <option value="ode">ode</option>
               <option value="sonnet">sonnet</option>
               <option value="short story">short story</option>
-            </select>
-          :</label>
+            </select> &nbsp;
+           about...</label>
           {/* Add text box to capture user prompt */}
-          <textarea type="text" value={prompt} onChange={handleInputChange} style={{width: "500px", height: "25px"}}/>
+          <textarea className="edit-textarea" type="text" value={prompt} onChange={handleInputChange} style={{width: "500px"}}/>
         <button type="submit">Generate</button>
       </form>
       {/* Add loading message so user knows content is being generated */}
         {error && <p style={{color: "red"}}>{error}</p>}
-        {generating ? <em>Generating content...</em> : <pre className="generated-content">{story}</pre>}
+        {generating ? <em>Please hold, generating content...</em> : <pre className="generated-content">{story}</pre>}
     </div>
   );
 };

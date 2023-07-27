@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+
 function NavBar({ setUser }) {
   
     function handleLogout() {
@@ -10,7 +13,7 @@ function NavBar({ setUser }) {
 
     return ( 
     <button className="logout" onClick={handleLogout}>
-        Logout
+        <FontAwesomeIcon icon={faSignOutAlt} />
     </button>
     );
 }

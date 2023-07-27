@@ -7,7 +7,7 @@ function Login({ onLogin }) {
 
   return (
     <div>
-      <h1>Welcome to the Limerick Generator!</h1>
+      <h1>Welcome to the Story Generator!</h1>
       <p>Sign up or login to get started</p>
       {showLogin ? (
         <>

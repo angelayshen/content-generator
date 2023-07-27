@@ -12,6 +12,9 @@ class Story(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     content = db.Column(db.String)
+    content_type = db.Column(db.String)
+    is_favorite = db.Column(db.Boolean, default=False)
+    time_created = db.Column(db.DateTime, server_default=db.func.now())
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 

@@ -2,7 +2,7 @@
 
 from flask import Flask, make_response, jsonify, request, session
 
-from config import app, db, api
+from config import app, db
 from models import Story, User
 
 @app.get('/stories')
@@ -15,8 +15,17 @@ def get_stories():
     )
 
 @app.get('/users/<int:user_id>/stories')
-def get_user_stories(user_id):
+def get_stories_by_user_id(user_id):
     stories = Story.query.filter(Story.user_id == user_id).all()
+    data = [story.to_dict() for story in stories]
+    return make_response(
+        jsonify(data), 
+        200
+    )
+
+@app.get('/stories/<string:content_type>')
+def get_stories_by_content_type(content_type):
+    stories = Story.query.filter(Story.content_type == content_type).all()
     data = [story.to_dict() for story in stories]
     return make_response(
         jsonify(data), 
@@ -31,6 +40,7 @@ def post_story():
         new_story = Story(
             title = data.get('title'),
             content = data.get('content'),
+            content_type = data.get('content_type'),
             user_id = data.get('user_id')
         )
 
