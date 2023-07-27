@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import StoryItem from './StoryItem';
+import Search from './Search';
 
 function StoryList({ user, contentType, onlyFavorites = false }) {
   const [stories, setStories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetch(`/users/${user.id}/stories`)
@@ -24,6 +26,13 @@ function StoryList({ user, contentType, onlyFavorites = false }) {
       });
   }, [user.id, contentType, onlyFavorites]); // Fetch stories when user id or content type or only favorites changes
 
+
+  // Reset searchTerm when switching pages
+  useEffect(() => {
+    setSearchTerm("");
+  }, [contentType, onlyFavorites]);
+
+
   function handleDelete(id) {
     setStories((currentStories) => currentStories.filter((story) => story.id !== id));
   };
@@ -33,12 +42,24 @@ function StoryList({ user, contentType, onlyFavorites = false }) {
   };
 
   return (
-    <div className="grid-container">
-      {[...stories].reverse().map(story => (
-        <div className="story-card" key={story.id}>
-          <StoryItem story={story} contentType={contentType} onDelete={handleDelete} onUpdate={handleUpdate} />
-        </div>
-      ))}
+    <div>
+      {/* Render Search component only on the "All" page, i.e. contentType is not defined */}
+      {!contentType && <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
+      <div className="grid-container">
+        {[...stories]
+          .filter((story) => {
+            return (
+              story.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              story.content.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+          })
+          .reverse()
+          .map((story) => (
+            <div className="story-card" key={story.id}>
+              <StoryItem story={story} contentType={contentType} onDelete={handleDelete} onUpdate={handleUpdate} />
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

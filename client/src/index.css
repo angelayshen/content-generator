@@ -10,6 +10,10 @@
   font-size: 1.1em; 
 }
 
+.header-container {
+  padding-bottom: 20px;
+}
+
 .logout {
   position: absolute;
   top: 10px;
@@ -61,10 +65,6 @@ article {
   margin-right: 0.5em;
 }
 
-form {
-  padding-top: 2rem;
-}
-
 button {
   background: rgb(196, 194, 194);
   color: rgb(3, 1, 55);
@@ -101,7 +101,6 @@ form > * {
 }
 
 .grid-container {
-  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
   gap: 10px;
@@ -134,11 +133,20 @@ select {
   overflow-y: auto;
 }
 
-
 .favorite-button {
   color: black;
 }
 
 .favorite-button.active {
   color: rgba(230, 9, 9, 0.824);
+}
+
+.search-bar {
+  padding: 0.3rem 0.7rem;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: inherit; 
+  font-size: 14px;
+  border-radius: 5px;
+  font-style: italic;
 }
