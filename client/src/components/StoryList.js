@@ -34,7 +34,7 @@ function StoryList({ user, contentType, onlyFavorites = false }) {
 
   return (
     <div className="grid-container">
-      {stories.map(story => (
+      {[...stories].reverse().map(story => (
         <div className="story-card" key={story.id}>
           <StoryItem story={story} contentType={contentType} onDelete={handleDelete} onUpdate={handleUpdate} />
         </div>
