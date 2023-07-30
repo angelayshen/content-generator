@@ -113,6 +113,10 @@ form > * {
   min-height: 200px;
   overflow: auto;
   word-wrap: break-word;
+  background-color: rgba(0, 0, 0, 0.8); /* add semi-transparent black background */
+  display: flex;
+  flex-direction: column;
+  justify-content: start; /* aligns content to the top */
 }
 
 select {
@@ -149,4 +153,99 @@ select {
   font-size: 14px;
   border-radius: 5px;
   font-style: italic;
+}
+
+/* Background transitions on story generator page */
+
+.story-generator-background {
+  position: relative; 
+  height: 100vh;
+  padding: 20px;
+}
+
+.story-generator-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at top left, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 0) 30%),
+    url('./images/BackgroundStoryGenerator.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+
+.story-generator-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: -1; /* Position the pseudo-element between the content and the background */
+  transition: background 0.5s ease; /* Optional: smooth transition */
+}
+
+.story-generator-background.story-generated::after {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Background on login page */
+
+.login-background {
+  position: relative; 
+  height: 100vh;
+  padding: 20px;
+}
+
+.login-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at top left, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 0) 30%),
+    url('./images/BackgroundLogin.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -1; 
+}
+
+/* Background on signup page */
+
+.signup-background {
+  position: relative; 
+  height: 100vh;
+  padding: 20px;
+}
+
+.signup-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at top left, rgba(0, 0, 0, 1) 18%, rgba(0, 0, 0, 0) 30%),
+    url('./images/BackgroundSignup.png');
+  background-size: cover;
+  background-position: center;
+  z-index: -1; 
+}
+
+/* Background on stories page */
+
+.stories-background {
+  background-image: url('./images/BackgroundStories.png');
+  background-repeat: repeat;
+  background-position: center;
+  min-height: 100vh;
+  padding: 20px;
 }

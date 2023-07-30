@@ -42,7 +42,7 @@ function StoryList({ user, contentType, onlyFavorites = false }) {
   };
 
   return (
-    <div>
+    <div className='stories-background'>
       {/* Render Search component only on the "All" page, i.e. contentType is not defined */}
       {!contentType && <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
       <div className="grid-container">

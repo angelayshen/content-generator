@@ -1,11 +1,13 @@
 import OPENAI_API_KEY from './keys.js';
 import React, { useState } from 'react';
 
+
 function StoryGenerator({ user }) {
   const [prompt, setPrompt] = useState("");
   const [story, setStory] = useState("");
   const [error, setError] = useState("");
   const [generating, setGenerating] = useState(false);
+  const [isStoryGenerated, setIsStoryGenerated] = useState(false);
   const [storyType, setStoryType] = useState("limerick");
 
   // Take in user prompt
@@ -75,7 +77,12 @@ function StoryGenerator({ user }) {
             throw new Error(`Failed to save story: ${saveResponse.status}`);
           } 
       }
-      await generateStory(prompt) 
+      try {
+        await generateStory(prompt)
+        setIsStoryGenerated(true);
+      } catch(e) {
+        setError(e.message);
+      }
 
     } catch(e) {
       setError(e.message);
@@ -85,20 +92,20 @@ function StoryGenerator({ user }) {
   }
 
   return (
-    <div>
+    <div className={`story-generator-background ${isStoryGenerated ? 'story-generated' : ''}`}>
       <form onSubmit={handleSubmit}>
           <label>Write a &nbsp;
             {/* Add a dropdown menu to select story type */}
             <select value={storyType} onChange={handleStoryTypeChange}>
               <option value="limerick">limerick</option>
               <option value="nursery rhyme (not a song)">nursery rhyme</option>
-              <option value="ode">ode</option>
-              <option value="sonnet">sonnet</option>
+              {/* <option value="ode">ode</option>
+              <option value="sonnet">sonnet</option> */}
               <option value="short story">short story</option>
             </select> &nbsp;
            about...</label>
           {/* Add text box to capture user prompt */}
-          <textarea className="edit-textarea" type="text" value={prompt} onChange={handleInputChange} style={{width: "500px"}}/>
+          <textarea type="text" value={prompt} onChange={handleInputChange} style={{width: "270px"}}/>
         <button type="submit">Generate</button>
       </form>
       {/* Add loading message so user knows content is being generated */}

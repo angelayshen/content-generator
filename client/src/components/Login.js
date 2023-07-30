@@ -4,9 +4,10 @@ import SignUpForm from "./SignupForm";
 
 function Login({ onLogin }) {
   const [showLogin, setShowLogin] = useState(true);
+  const backgroundClass = showLogin ? "login-background" : "signup-background";
 
   return (
-    <div>
+    <div className={backgroundClass}>
       <h1>Welcome to the Story Generator!</h1>
       <p>Sign up or login to get started</p>
       {showLogin ? (
