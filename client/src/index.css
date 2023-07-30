@@ -92,10 +92,18 @@ form > * {
   font-style: italic;
 }
 
+/* apply a 480px minimum width for viewports larger than 480px (personal computers), and a 100% minimum width for viewports 480px or smaller (tablets, iPhones) */
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
   gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }
 }
 
 .story-card {
