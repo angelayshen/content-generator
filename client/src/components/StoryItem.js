@@ -86,7 +86,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
     <article>
       <h3>{title}</h3>
       {/* Only show content type if contentType prop is not passed down */}
-      {contentType ? null : <p className="generated-content-type">{content_type}</p>}
+      {contentType ? null : <p className="generated-content-type">{content_type=='nursery rhyme (not a song)'? "nursery rhyme" : content_type}</p>}
       <pre className="generated-content">{content}</pre>
       <button onClick={handleFavorite}>
         <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} color={isFavorite ? "red" : "black"} />
