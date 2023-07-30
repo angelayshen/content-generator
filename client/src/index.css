@@ -18,6 +18,7 @@
   position: absolute;
   top: 10px;
   right: 18px;
+  margin-top: 8px;
 }
 
 body {
@@ -48,13 +49,6 @@ a:hover {
   text-decoration: underline;
 }
 
-/* .App {
-  margin-left: auto;
-  margin-right: auto;
-  padding: 2.5rem 1rem;
-  max-width: 700px;
-} */
-
 header h1 {
   font-size: 2em;
 }
@@ -75,14 +69,12 @@ button {
   font-size: 1rem;
   font-family: inherit;
   margin-right: 8px;
-  margin-top: 8px;
 }
 
 button:hover {
   background: pink;
   color: black;
 }
-
 
 form > * {
   display: block;
@@ -137,18 +129,11 @@ select {
   overflow-y: auto;
 }
 
-.favorite-button {
-  color: black;
-}
-
-.favorite-button.active {
-  color: rgba(230, 9, 9, 0.824);
-}
-
 .search-bar {
+  margin-top: 10px;
   padding: 0.3rem 0.7rem;
   box-sizing: border-box;
-  width: 100%;
+  width: 400px;
   font-family: inherit; 
   font-size: 14px;
   border-radius: 5px;
@@ -186,7 +171,7 @@ select {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0);
-  z-index: -1; /* Position the pseudo-element between the content and the background */
+  z-index: -1; 
   transition: background 0.5s ease; /* Optional: smooth transition */
 }
 

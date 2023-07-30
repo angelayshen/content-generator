@@ -5,6 +5,7 @@ import Search from './Search';
 function StoryList({ user, contentType, onlyFavorites = false }) {
   const [stories, setStories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   useEffect(() => {
     fetch(`/users/${user.id}/stories`)
@@ -17,20 +18,20 @@ function StoryList({ user, contentType, onlyFavorites = false }) {
           filteredStories = filteredStories.filter((story) => story.content_type === contentType);
         }
 
-        if (onlyFavorites) {
+        if (showOnlyFavorites) {
           // Filter stories based on favorite status
           filteredStories = filteredStories.filter((story) => story.is_favorite === true);
         }
 
         setStories(filteredStories);
       });
-  }, [user.id, contentType, onlyFavorites]); // Fetch stories when user id or content type or only favorites changes
+  }, [user.id, contentType, showOnlyFavorites]); // Fetch stories when user id or content type or show only favorites changes
 
 
   // Reset searchTerm when switching pages
   useEffect(() => {
     setSearchTerm("");
-  }, [contentType, onlyFavorites]);
+  }, [contentType, showOnlyFavorites]);
 
 
   function handleDelete(id) {
@@ -44,7 +45,11 @@ function StoryList({ user, contentType, onlyFavorites = false }) {
   return (
     <div className='stories-background'>
       {/* Render Search component only on the "All" page, i.e. contentType is not defined */}
-      {!contentType && <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
+        {!contentType && (
+            <div>
+              <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} showOnlyFavorites={showOnlyFavorites} setShowOnlyFavorites={setShowOnlyFavorites}/>
+            </div>
+          )}
       <div className="grid-container">
         {[...stories]
           .filter((story) => {

@@ -88,8 +88,8 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
       {/* Only show content type if contentType prop is not passed down */}
       {contentType ? null : <p className="generated-content-type">{content_type}</p>}
       <pre className="generated-content">{content}</pre>
-      <button className={isFavorite ? "favorite-button active" : "favorite-button"} onClick={handleFavorite}>
-        <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} />
+      <button onClick={handleFavorite}>
+        <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} color={isFavorite ? "red" : "black"} />
       </button>
       <button onClick={() => setIsEditing(true)}>
           <FontAwesomeIcon icon={faEdit} />

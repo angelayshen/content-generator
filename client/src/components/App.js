@@ -32,10 +32,7 @@ function App() {
           <NavLink to='/stories' exact activeClassName='active-link'>All</NavLink>
           <NavLink to='/stories/limerick' activeClassName='active-link'>Limericks</NavLink>
           <NavLink to='/stories/nursery-rhyme' activeClassName='active-link'>Nursery Rhymes</NavLink>
-          {/* <NavLink to='/stories/ode' activeClassName='active-link'>Odes</NavLink>
-          <NavLink to='/stories/sonnet' activeClassName='active-link'>Sonnets</NavLink> */}
           <NavLink to='/stories/short-story' activeClassName='active-link'>Short Stories</NavLink>
-          <NavLink to='/stories/favorite' activeClassName='active-link'>Favorites</NavLink>
         </div>
           <Switch>
             <Route exact path="/">
@@ -50,17 +47,8 @@ function App() {
             <Route path="/stories/nursery-rhyme">
               <StoryList user={user} contentType="nursery rhyme (not a song)"/>
             </Route>
-            {/* <Route path="/stories/ode">
-              <StoryList user={user} contentType="ode"/>
-            </Route>
-            <Route path="/stories/sonnet">
-              <StoryList user={user} contentType="sonnet"/>
-            </Route> */}
             <Route path="/stories/short-story">
               <StoryList user={user} contentType="short story"/>
-            </Route>
-            <Route path="/stories/favorite">
-              <StoryList user={user} onlyFavorites={true}/>
             </Route>
           </Switch>
       </div>
