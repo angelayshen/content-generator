@@ -5,6 +5,46 @@ from flask import Flask, make_response, jsonify, request, session
 from config import app, db
 from models import Story, User
 
+import os
+openai_api_key = os.getenv('OPENAI_API_KEY')
+print("OPENAI_API_KEY from environment:", os.getenv('OPENAI_API_KEY'))
+
+import openai
+openai.api_key = openai_api_key
+
+@app.post('/generateStory')
+def generate_story():
+    data = request.get_json()
+    story_type = data.get('storyType')
+    prompt = data.get('prompt')
+
+    if not story_type or not prompt:
+        return make_response(
+            jsonify({"error": "Missing storyType or prompt"}),
+            400
+        )
+
+    try:
+        messages = [{"role": "user", "content": f"Write a {story_type} about {prompt}."}]
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            max_tokens=400
+        )
+
+        content = completion.choices[0].message.content
+
+        return make_response(
+            jsonify({"content": content}),
+            200
+        )
+    except Exception as e:
+        print(e)
+        return make_response(
+            jsonify({"error": "Error generating story"}),
+            500
+        )
+
 @app.get('/stories')
 def get_stories():
     stories = Story.query.all()

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignupForm";
+import { Helmet } from 'react-helmet';
 
 function Login({ onLogin }) {
   const [showLogin, setShowLogin] = useState(true);
@@ -8,8 +9,10 @@ function Login({ onLogin }) {
 
   return (
     <div className={backgroundClass}>
+      <Helmet>
+        <title>Story Generator</title>
+      </Helmet>
       <h1>Welcome to the Story Generator!</h1>
-      <p>Sign up or login to get started</p>
       {showLogin ? (
         <>
           <LoginForm onLogin={onLogin} />
