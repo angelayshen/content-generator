@@ -32,10 +32,10 @@ def generate_story():
             max_tokens=400
         )
 
-        content = completion.choices[0].message.content
+        story = completion.choices[0].message.content
 
         return make_response(
-            jsonify({"content": content}),
+            jsonify({"content": story}),
             200
         )
     except Exception as e:
