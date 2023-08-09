@@ -127,6 +127,14 @@ form > * {
   justify-content: start; /* aligns content to the top */
 }
 
+.story-image {
+  width: 60%;
+  height: auto;
+  border-radius: 15px; 
+  display: block;
+  max-width: 100%;
+}
+
 select {
   font-family: "Montserrat", sans-serif;
   font-size: 1rem;
@@ -249,4 +257,20 @@ select {
   background-position: center;
   min-height: 100vh;
   padding: 20px;
+}
+
+/* Story image delete button */
+
+.image-container {
+  position: relative;
+  display: inline-block; /* or "flex", depending on what you need */
+}
+
+.delete-image-button {
+  position: absolute;
+  top: 10px; 
+  right: 5px; 
+  background: black;
+  border: none;
+  cursor: pointer;
 }

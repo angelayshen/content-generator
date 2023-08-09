@@ -64,7 +64,7 @@ def generate_image():
         response = openai.Image.create(
             prompt=imagePrompt,
             n=1,
-            size="256x256",
+            size="512x512",
             response_format="b64_json" # Set the response format to b64_json
         )
 

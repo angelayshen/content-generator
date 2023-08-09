@@ -9,9 +9,9 @@ function StoryGenerator({ user }) {
   const [isStoryGenerated, setIsStoryGenerated] = useState(false);
   const [storyType, setStoryType] = useState("limerick");
   const [isStorySaved, setIsStorySaved] = useState(false);
-
   const [showImagePrompt, setShowImagePrompt] = useState(false);
   const [imageBase64, setImageBase64] = useState("");
+  const [storyId, setStoryId] = useState(null);
 
   function handleInputChange(event) {
     setPrompt(event.target.value);
@@ -34,7 +34,6 @@ function StoryGenerator({ user }) {
           content: story,
           content_type: storyType,
           user_id: user.id,
-          image_base64: imageBase64
         }),
       });
 
@@ -42,6 +41,8 @@ function StoryGenerator({ user }) {
         throw new Error(`Failed to save story: ${saveResponse.status}`);
       }
 
+      const data = await saveResponse.json();
+      setStoryId(data.id)
       setIsStorySaved(true);
     } catch (error) {
       setError(error.message);
@@ -50,6 +51,8 @@ function StoryGenerator({ user }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
+
+    setError("");
 
     if (prompt.length < 10) {
       setError("Prompt must be at least 10 characters long");
@@ -72,7 +75,7 @@ function StoryGenerator({ user }) {
       const data = await response.json();
       setStory(data.content);
       setIsStoryGenerated(true);
-      setIsStorySaved(false); // reset the saved status when a new story is generated
+      setIsStorySaved(false);
 
     } catch (error) {
       setError(error.message);
@@ -98,17 +101,17 @@ function StoryGenerator({ user }) {
           <textarea type="text" value={prompt} onChange={handleInputChange} style={{width: "270px"}}/>
         <div style={{ display: 'flex' }}>
           <button type="submit">{isStoryGenerated ? 'Regenerate Text' : 'Generate'}</button>
-          {isStoryGenerated && <button type="button" onClick={handleSave}>Save</button>}
+          {isStoryGenerated && <button type="button" onClick={handleSave}>Save Text</button>}
         </div>
       </form>
-      {isStorySaved && <p style={{ color: 'green' }}>Your {storyType} has been saved!</p>}
       {error && <p style={{color: "red"}}>{error}</p>}
       {generating ? <em>Please hold, generating content...</em> : <pre className="generated-content">{story}</pre>}
-      {isStoryGenerated && !showImagePrompt && (
+      {isStorySaved && <p style={{ color: 'green' }}>Your {storyType} has been saved!</p>}
+      {isStorySaved && !showImagePrompt && (
         <button type="button" onClick={() => setShowImagePrompt(true)}>Add Image (Optional)</button>
       )}
       {showImagePrompt && (
-        <ImageGenerator onGenerate={handleImageGeneration} />
+        <ImageGenerator onGenerate={handleImageGeneration} storyId={storyId} />
       )}
     </div>
   );  

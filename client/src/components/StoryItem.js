@@ -11,11 +11,12 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   const [newTitle, setNewTitle] = useState(title);
   const [newContent, setNewContent] = useState(content);
   const [newContentType, setNewContentType] = useState(content_type);
+  const [newImageBase64, setNewImageBase64] = useState(image_base64);
   const [isFavorite, setIsFavorite] = useState(is_favorite);
   const [isShared, setIsShared] = useState(false);
 
   // Handle delete request
-  const handleDelete = () => {
+  function handleDelete() {
     fetch(`/stories/${id}`, {
       method: 'DELETE',
     })
@@ -27,7 +28,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   }
 
   // Handle favorite request
-  const handleFavorite = (event) => {
+  function handleFavorite(event) {
     event.preventDefault();
     fetch(`/stories/${id}`, {
       method: 'PATCH',
@@ -47,7 +48,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   };  
 
   // Handle update request
-  const handleUpdate = (event) => {
+  function handleUpdate(event) {
     event.preventDefault();
     fetch(`/stories/${id}`, {
       method: 'PATCH',
@@ -58,6 +59,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
         title: newTitle,
         content: newContent,
         content_type: newContentType,
+        image_base64: newImageBase64,
       }),
     })
     .then((r) => r.json())
@@ -77,6 +79,14 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
           <textarea className="edit-textarea" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
           {/* <textarea className="edit-textarea" value={newContentType} onChange={(e) => setNewContentType(e.target.value)} /> */}
           <textarea className="edit-textarea" style={{height: "250px"}} value={newContent} onChange={(e) => setNewContent(e.target.value)} />
+          {newImageBase64 && (
+            <div className="image-container">
+              <img src={`data:image/png;base64,${newImageBase64}`} alt={`${title} image`} className="story-image" />
+              <button type="button" className="delete-image-button" onClick={(e) => { e.preventDefault(); setNewImageBase64(null); }}>
+                <FontAwesomeIcon icon={faTrashAlt} color="white" />
+              </button>
+            </div>
+          )}
           <button type="submit">Save Changes</button>
         </form>
         <button onClick={() => setIsEditing(false)}>Cancel</button>
@@ -86,7 +96,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
 
   // Handle share request
 
-  const handleShare = () => {
+  function handleShare() {
     const url = `${window.location.origin}/stories/${id}`
   
     if (navigator.share) {
@@ -106,9 +116,9 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   return (
     <article>
       <h3>{title}</h3>
-      {image_base64 && <img src={`data:image/png;base64,${image_base64}`} alt={`${title} image`} />}
       {/* Only show content type if contentType prop is not passed down */}
       {contentType ? null : <p className="generated-content-type">{content_type=='nursery rhyme (not a song)'? "nursery rhyme" : content_type}</p>}
+      {image_base64 && <img src={`data:image/png;base64,${image_base64}`} alt={`${title} image`} className="story-image" />}
       <pre className="generated-content">{content}</pre>
       <button onClick={handleFavorite}>
         <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} color={isFavorite ? "red" : "black"} />
