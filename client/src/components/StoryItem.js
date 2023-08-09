@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart as solidHeart, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'
+import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 
 function StoryItem({ story, onDelete, onUpdate, contentType }) {
   const { id, title, content, content_type, is_favorite } = story;
@@ -11,6 +12,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   const [newContent, setNewContent] = useState(content);
   const [newContentType, setNewContentType] = useState(content_type);
   const [isFavorite, setIsFavorite] = useState(is_favorite);
+  const [isShared, setIsShared] = useState(false);
 
   // Handle delete request
   const handleDelete = () => {
@@ -24,25 +26,25 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
     });
   }
 
-    // Handle favorite request
-    const handleFavorite = (event) => {
-      event.preventDefault();
-      fetch(`/stories/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          is_favorite: !isFavorite,
-        }),
-      })
-      .then((r) => r.json())
-      .then((updatedStory) => {
-        if (updatedStory.id) {
-          setIsFavorite(!isFavorite);
-        }
-      });
-    };  
+  // Handle favorite request
+  const handleFavorite = (event) => {
+    event.preventDefault();
+    fetch(`/stories/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        is_favorite: !isFavorite,
+      }),
+    })
+    .then((r) => r.json())
+    .then((updatedStory) => {
+      if (updatedStory.id) {
+        setIsFavorite(!isFavorite);
+      }
+    });
+  };  
 
   // Handle update request
   const handleUpdate = (event) => {
@@ -82,6 +84,25 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
     );
   }
 
+  // Handle share request
+
+  const handleShare = () => {
+    const url = `${window.location.origin}/stories/${id}`
+  
+    if (navigator.share) {
+      navigator.share({
+        title: title,
+        url: url,
+      }).then(() => setIsShared(true))
+      .catch(console.error);
+    } else {
+      // Fallback to copy to clipboard if web share API is not supported
+      navigator.clipboard.writeText(url).then(() => {
+        setIsShared(true);
+      }).catch(console.error);
+    }
+  };  
+
   return (
     <article>
       <h3>{title}</h3>
@@ -97,6 +118,10 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
       <button onClick={handleDelete}>
           <FontAwesomeIcon icon={faTrashAlt} />
       </button>
+      <button onClick={handleShare}>
+      <FontAwesomeIcon icon={faShareAlt} />
+      </button>
+      {isShared && <p style={{ color: 'green' }}>Story link has been copied!</p>}
     </article>
   );
 }

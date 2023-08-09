@@ -67,6 +67,7 @@ def get_stories_by_user_id(user_id):
 def get_stories_by_content_type(content_type):
     stories = Story.query.filter(Story.content_type == content_type).all()
     data = [story.to_dict() for story in stories]
+    
     return make_response(
         jsonify(data), 
         200
