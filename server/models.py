@@ -13,6 +13,7 @@ class Story(db.Model, SerializerMixin):
     title = db.Column(db.String)
     content = db.Column(db.String)
     content_type = db.Column(db.String)
+    image_base64 = db.Column(db.Text)
     is_favorite = db.Column(db.Boolean, default=False)
     time_created = db.Column(db.DateTime, server_default=db.func.now())
 

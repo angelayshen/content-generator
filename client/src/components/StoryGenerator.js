@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ImageGenerator from './ImageGenerator';
 
 function StoryGenerator({ user }) {
   const [prompt, setPrompt] = useState("");
@@ -8,6 +9,9 @@ function StoryGenerator({ user }) {
   const [isStoryGenerated, setIsStoryGenerated] = useState(false);
   const [storyType, setStoryType] = useState("limerick");
   const [isStorySaved, setIsStorySaved] = useState(false);
+
+  const [showImagePrompt, setShowImagePrompt] = useState(false);
+  const [imageBase64, setImageBase64] = useState("");
 
   function handleInputChange(event) {
     setPrompt(event.target.value);
@@ -29,7 +33,8 @@ function StoryGenerator({ user }) {
           title: prompt,
           content: story,
           content_type: storyType,
-          user_id: user.id
+          user_id: user.id,
+          image_base64: imageBase64
         }),
       });
 
@@ -76,6 +81,10 @@ function StoryGenerator({ user }) {
     }
   }
 
+  function handleImageGeneration(base64Image) {
+    setImageBase64(base64Image);
+  }
+
   return (
     <div className={`story-generator-background ${isStoryGenerated ? 'story-generated' : ''}`}>
       <form onSubmit={handleSubmit}>
@@ -88,13 +97,19 @@ function StoryGenerator({ user }) {
            about...</label>
           <textarea type="text" value={prompt} onChange={handleInputChange} style={{width: "270px"}}/>
         <div style={{ display: 'flex' }}>
-          <button type="submit">{isStoryGenerated ? 'Regenerate' : 'Generate'}</button>
+          <button type="submit">{isStoryGenerated ? 'Regenerate Text' : 'Generate'}</button>
           {isStoryGenerated && <button type="button" onClick={handleSave}>Save</button>}
         </div>
       </form>
       {isStorySaved && <p style={{ color: 'green' }}>Your {storyType} has been saved!</p>}
       {error && <p style={{color: "red"}}>{error}</p>}
       {generating ? <em>Please hold, generating content...</em> : <pre className="generated-content">{story}</pre>}
+      {isStoryGenerated && !showImagePrompt && (
+        <button type="button" onClick={() => setShowImagePrompt(true)}>Add Image (Optional)</button>
+      )}
+      {showImagePrompt && (
+        <ImageGenerator onGenerate={handleImageGeneration} />
+      )}
     </div>
   );  
 };

@@ -5,7 +5,7 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
 
 function StoryItem({ story, onDelete, onUpdate, contentType }) {
-  const { id, title, content, content_type, is_favorite } = story;
+  const { id, title, content, content_type, image_base64, is_favorite } = story;
 
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -106,6 +106,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   return (
     <article>
       <h3>{title}</h3>
+      {image_base64 && <img src={`data:image/png;base64,${image_base64}`} alt={`${title} image`} />}
       {/* Only show content type if contentType prop is not passed down */}
       {contentType ? null : <p className="generated-content-type">{content_type=='nursery rhyme (not a song)'? "nursery rhyme" : content_type}</p>}
       <pre className="generated-content">{content}</pre>

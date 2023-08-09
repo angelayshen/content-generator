@@ -7,10 +7,12 @@ from models import Story, User
 
 import os
 openai_api_key = os.getenv('OPENAI_API_KEY')
-print("OPENAI_API_KEY from environment:", os.getenv('OPENAI_API_KEY'))
+# print("OPENAI_API_KEY from environment:", os.getenv('OPENAI_API_KEY'))
 
 import openai
 openai.api_key = openai_api_key
+
+# Make API request to generate text
 
 @app.post('/generateStory')
 def generate_story():
@@ -42,6 +44,40 @@ def generate_story():
         print(e)
         return make_response(
             jsonify({"error": "Error generating story"}),
+            500
+        )
+
+# Make API request to generate image
+
+@app.post('/generateImage')
+def generate_image():
+    data = request.get_json()
+    imagePrompt = data.get('imagePrompt')
+
+    if not imagePrompt:
+        return make_response(
+            jsonify({"error": "Missing prompt"}),
+            400
+        )
+
+    try:
+        response = openai.Image.create(
+            prompt=imagePrompt,
+            n=1,
+            size="256x256",
+            response_format="b64_json" # Set the response format to b64_json
+        )
+
+        image_base64 = response['data'][0]['b64_json'] # Retrieve Base64 image from response
+
+        return make_response(
+            jsonify({"image_base64": image_base64}),
+            200
+        )
+    except Exception as e:
+        print(e)
+        return make_response(
+            jsonify({"error": "Error generating image"}),
             500
         )
 
@@ -82,6 +118,7 @@ def post_story():
             title = data.get('title'),
             content = data.get('content'),
             content_type = data.get('content_type'),
+            image_base64 = data.get('image_base64'),
             user_id = data.get('user_id')
         )
 
