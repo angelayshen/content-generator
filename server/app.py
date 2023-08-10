@@ -62,13 +62,13 @@ def generate_image():
 
     try:
         response = openai.Image.create(
-            prompt=imagePrompt,
-            n=1,
-            size="512x512",
-            response_format="b64_json" # Set the response format to b64_json
+            prompt = f"Oil painting of {imagePrompt}",
+            n = 1,
+            size = "512x512",
+            response_format = "b64_json" # Set the response format to Base64
         )
 
-        image_base64 = response['data'][0]['b64_json'] # Retrieve Base64 image from response
+        image_base64 = response['data'][0]['b64_json'] 
 
         return make_response(
             jsonify({"image_base64": image_base64}),

@@ -13,6 +13,41 @@ function StoryGenerator({ user }) {
   const [imageBase64, setImageBase64] = useState("");
   const [storyId, setStoryId] = useState(null);
 
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    setError("");
+
+    if (prompt.length < 10) {
+      setError("Prompt must be at least 10 characters long");
+      return;
+    }
+
+    setGenerating(true);
+
+    try {
+      const response = await fetch('/generateStory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ storyType, prompt })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to generate story: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setStory(data.content);
+      setIsStoryGenerated(true);
+      setIsStorySaved(false);
+
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setGenerating(false);
+    }
+  }
+
   function handleInputChange(event) {
     setPrompt(event.target.value);
     setError("");
@@ -49,41 +84,6 @@ function StoryGenerator({ user }) {
     }
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-
-    setError("");
-
-    if (prompt.length < 10) {
-      setError("Prompt must be at least 10 characters long");
-      return;
-    }
-
-    setGenerating(true);
-
-    try {
-      const response = await fetch('/generateStory', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ storyType, prompt })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to generate story: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setStory(data.content);
-      setIsStoryGenerated(true);
-      setIsStorySaved(false);
-
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setGenerating(false);
-    }
-  }
-
   function handleImageGeneration(base64Image) {
     setImageBase64(base64Image);
   }
@@ -105,8 +105,8 @@ function StoryGenerator({ user }) {
         </div>
       </form>
       {error && <p style={{color: "red"}}>{error}</p>}
-      {generating ? <em>Please hold, generating content...</em> : <pre className="generated-content">{story}</pre>}
       {isStorySaved && <p style={{ color: 'green' }}>Your {storyType} has been saved!</p>}
+      {generating ? <em>Please hold, generating content...</em> : <pre className="generated-content">{story}</pre>}
       {isStorySaved && !showImagePrompt && (
         <button type="button" onClick={() => setShowImagePrompt(true)}>Add Image (Optional)</button>
       )}

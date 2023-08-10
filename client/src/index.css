@@ -267,10 +267,11 @@ select {
 }
 
 .delete-image-button {
-  position: absolute;
-  top: 10px; 
+  position: relative;
+  top: 5px; 
   right: 5px; 
   background: black;
+  color: white;
   border: none;
   cursor: pointer;
 }

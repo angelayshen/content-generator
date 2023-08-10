@@ -39,7 +39,6 @@ function ImageGenerator({ onGenerate, storyId }) {
   }
 
   async function handleSaveImage() {
-    console.log(storyId)
 
     try {
       const saveResponse = await fetch(`/stories/${storyId}`, {
@@ -73,12 +72,12 @@ function ImageGenerator({ onGenerate, storyId }) {
       </form>
       {generating ? <em>Please hold, generating image...</em> : null}
       {error ? <p style={{color: "red"}}>{error}</p> : null}
+      {isImageSaved && <p style={{ color: 'green' }}>Your image has been saved!</p>}
       {imageBase64 ? (
         <div>
           <img src={`data:image/png;base64,${imageBase64}`} alt={imagePrompt} />
         </div>
       ) : null}
-      {isImageSaved && <p style={{ color: 'green' }}>Your image has been saved!</p>}
     </div>
   );
 }

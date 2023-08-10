@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart as solidHeart, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as solidHeart, faEdit, faTrashAlt, faShareAlt } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'
-import { faShareAlt } from '@fortawesome/free-solid-svg-icons';
+import ImageGenerator from './ImageGenerator';
 
 function StoryItem({ story, onDelete, onUpdate, contentType }) {
   const { id, title, content, content_type, image_base64, is_favorite } = story;
@@ -14,6 +14,8 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   const [newImageBase64, setNewImageBase64] = useState(image_base64);
   const [isFavorite, setIsFavorite] = useState(is_favorite);
   const [isShared, setIsShared] = useState(false);
+  const [showImagePrompt, setShowImagePrompt] = useState(false);
+  const [imageBase64, setImageBase64] = useState("");
 
   // Handle delete request
   function handleDelete() {
@@ -72,6 +74,11 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
     });
   };
 
+  // Handle image generation
+  function handleImageGeneration(base64Image) {
+    setImageBase64(base64Image);
+  }
+
   if (isEditing) {
     return (
       <article>
@@ -79,17 +86,22 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
           <textarea className="edit-textarea" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
           {/* <textarea className="edit-textarea" value={newContentType} onChange={(e) => setNewContentType(e.target.value)} /> */}
           <textarea className="edit-textarea" style={{height: "250px"}} value={newContent} onChange={(e) => setNewContent(e.target.value)} />
-          {newImageBase64 && (
+          <button type="submit">Save Changes</button>
+          <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+        </form>
+        {newImageBase64 ? (
             <div className="image-container">
               <img src={`data:image/png;base64,${newImageBase64}`} alt={`${title} image`} className="story-image" />
               <button type="button" className="delete-image-button" onClick={(e) => { e.preventDefault(); setNewImageBase64(null); }}>
-                <FontAwesomeIcon icon={faTrashAlt} color="white" />
+                <FontAwesomeIcon icon={faTrashAlt} color="white" /> &nbsp; Delete image
               </button>
             </div>
-          )}
-          <button type="submit">Save Changes</button>
-        </form>
-        <button onClick={() => setIsEditing(false)}>Cancel</button>
+          ) : (
+            <button type="button" onClick={() => setShowImagePrompt(true)}>Add Image (Optional)</button>
+        )}
+        {showImagePrompt && (
+          <ImageGenerator onGenerate={handleImageGeneration} storyId={id} />
+        )}
       </article>
     );
   }
@@ -117,9 +129,15 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
     <article>
       <h3>{title}</h3>
       {/* Only show content type if contentType prop is not passed down */}
-      {contentType ? null : <p className="generated-content-type">{content_type=='nursery rhyme (not a song)'? "nursery rhyme" : content_type}</p>}
-      {image_base64 && <img src={`data:image/png;base64,${image_base64}`} alt={`${title} image`} className="story-image" />}
-      <pre className="generated-content">{content}</pre>
+      {contentType ? null : <p className="generated-content-type">
+        {content_type==='nursery rhyme (not a song)'? "nursery rhyme" : content_type}
+      </p>}
+      <pre className="generated-content">
+        {content}
+      </pre>
+      <p>
+        {image_base64 && <img src={`data:image/png;base64,${image_base64}`} alt={`${title} image`} className="story-image" />}
+      </p>
       <button onClick={handleFavorite}>
         <FontAwesomeIcon icon={isFavorite ? solidHeart : regularHeart} color={isFavorite ? "red" : "black"} />
       </button>
@@ -130,9 +148,11 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
           <FontAwesomeIcon icon={faTrashAlt} />
       </button>
       <button onClick={handleShare}>
-      <FontAwesomeIcon icon={faShareAlt} />
+        <FontAwesomeIcon icon={faShareAlt} />
       </button>
-      {isShared && <p style={{ color: 'green' }}>Story link has been copied!</p>}
+      {isShared && <p style={{ color: 'green' }}>
+        Story link has been copied!
+      </p>}
     </article>
   );
 }
