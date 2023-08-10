@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart as solidHeart, faEdit, faTrashAlt, faShareAlt } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons'
@@ -73,6 +73,13 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
     });
   };
 
+  // Only show image prompt if user is editing
+  useEffect(() => {
+    if (!isEditing) {
+      setShowImagePrompt(false);
+    }
+  }, [isEditing]);  
+
   // Handle image generation
   function handleImageGeneration(imageBase64) {
     setNewImageBase64(imageBase64);
@@ -91,7 +98,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
         {showImagePrompt && (
           <ImageGenerator onGenerate={handleImageGeneration} storyId={id} />
         )}
-        {newImageBase64 ? (
+        {story.image_base64 !== null ? (
             <div className="image-container">
               <img src={`data:image/png;base64,${newImageBase64}`} alt={`${title} image`} className="story-image" />
               <button type="button" className="delete-image-button" onClick={(e) => { e.preventDefault(); setNewImageBase64(null); }}>
@@ -128,7 +135,7 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
       <h3>{title}</h3>
       {/* Only show content type if contentType prop is not passed down */}
       {contentType ? null : <p className="generated-content-type">
-        {content_type==='nursery rhyme (not a song)'? "nursery rhyme" : content_type}
+        {content_type}
       </p>}
       <pre className="generated-content">
         {content}

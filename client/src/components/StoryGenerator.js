@@ -16,8 +16,6 @@ function StoryGenerator({ user }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    setError("");
-
     if (prompt.length < 10) {
       setError("Prompt must be at least 10 characters long");
       return;
@@ -94,7 +92,7 @@ function StoryGenerator({ user }) {
           <label>Write a &nbsp;
             <select value={storyType} onChange={handleStoryTypeChange}>
               <option value="limerick">limerick</option>
-              <option value="nursery rhyme (not a song)">nursery rhyme</option>
+              <option value="nursery rhyme">nursery rhyme</option>
               <option value="short story">short story</option>
             </select> &nbsp;
            about...</label>
