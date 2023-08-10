@@ -15,7 +15,6 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   const [isFavorite, setIsFavorite] = useState(is_favorite);
   const [isShared, setIsShared] = useState(false);
   const [showImagePrompt, setShowImagePrompt] = useState(false);
-  const [imageBase64, setImageBase64] = useState("");
 
   // Handle delete request
   function handleDelete() {
@@ -75,8 +74,8 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
   };
 
   // Handle image generation
-  function handleImageGeneration(base64Image) {
-    setImageBase64(base64Image);
+  function handleImageGeneration(imageBase64) {
+    setNewImageBase64(imageBase64);
   }
 
   if (isEditing) {
@@ -89,6 +88,9 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
           <button type="submit">Save Changes</button>
           <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
         </form>
+        {showImagePrompt && (
+          <ImageGenerator onGenerate={handleImageGeneration} storyId={id} />
+        )}
         {newImageBase64 ? (
             <div className="image-container">
               <img src={`data:image/png;base64,${newImageBase64}`} alt={`${title} image`} className="story-image" />
@@ -96,18 +98,14 @@ function StoryItem({ story, onDelete, onUpdate, contentType }) {
                 <FontAwesomeIcon icon={faTrashAlt} color="white" /> &nbsp; Delete image
               </button>
             </div>
-          ) : (
+          ) : !showImagePrompt ? (
             <button type="button" onClick={() => setShowImagePrompt(true)}>Add Image (Optional)</button>
-        )}
-        {showImagePrompt && (
-          <ImageGenerator onGenerate={handleImageGeneration} storyId={id} />
-        )}
+        ) : null}
       </article>
     );
   }
 
   // Handle share request
-
   function handleShare() {
     const url = `${window.location.origin}/stories/${id}`
   

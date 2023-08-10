@@ -27,9 +27,8 @@ function ImageGenerator({ onGenerate, storyId }) {
 
       const data = await response.json();
       setImageBase64(data.image_base64);
-      onGenerate(data.image_base64); 
+      onGenerate(data.image_base64, isImageSaved); 
       setIsImageGenerated(true);
-      setIsImageSaved(false);
 
     } catch (error) {
       setError(error.message);
