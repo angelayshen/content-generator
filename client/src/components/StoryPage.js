@@ -39,7 +39,9 @@ function StoryPage() {
       {story ? (
         <>
           <h3>{story.title}</h3>
+          <p className="generated-content-type">{story.content_type=='nursery rhyme (not a song)'? "nursery rhyme" : story.content_type}</p>
           <pre className="generated-content">{story.content}</pre>
+          <img src={`data:image/png;base64,${story.image_base64}`} alt={`${story.title} image`} className="story-image" />
         </>
       ) : (
         <p>Oops, this story doesn't exist yet!</p>
